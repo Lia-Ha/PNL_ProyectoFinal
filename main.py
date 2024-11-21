@@ -88,18 +88,20 @@ def generate_response(user_input):
         logging.error(f"Error al generar respuesta: {e}")
         return "Hubo un problema al generar la respuesta. Por favor, intenta nuevamente."
 
-# Generar preguntas sugeridas
+# Mostrar preguntas sugeridas como una tabla
 st.subheader("Preguntas sugeridas")
+
+# Crear un DataFrame para las preguntas sugeridas
 suggested_questions = [
-    "¿Qué especialidades son las más recomendadas según los profesores?",
-    "¿Qué retos enfrentaron los estudiantes al elegir su carrera?",
-    "¿Qué habilidades se necesitan para destacar en Ingeniería Informática?",
-    "¿Cómo encontrar información sobre las especialidades más demandadas?"
+    {"Pregunta": "¿Qué especialidades son las más recomendadas según los profesores?"},
+    {"Pregunta": "¿Qué retos enfrentaron los estudiantes al elegir su carrera?"},
+    {"Pregunta": "¿Qué habilidades se necesitan para destacar en Ingeniería Informática?"},
+    {"Pregunta": "¿Cómo encontrar información sobre las especialidades más demandadas?"}
 ]
-for question in suggested_questions:
-    if st.button(question):
-        response = generate_response(question)
-        st.chat_message("assistant", avatar="🤖").markdown(response)
+
+# Mostrar la tabla con las preguntas sugeridas
+questions_df = pd.DataFrame(suggested_questions)
+st.table(questions_df)
 
 # Entrada del usuario y procesamiento
 st.subheader("Haz tu consulta")
@@ -119,3 +121,4 @@ for message in st.session_state["messages"]:
     else:
         with st.chat_message(message["role"], avatar="👤"):
             st.markdown(message["content"])
+
