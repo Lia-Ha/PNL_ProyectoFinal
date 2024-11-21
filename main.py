@@ -91,18 +91,35 @@ if st.checkbox("Mostrar datos cargados y buscar información"):
         st.write(f"Resultados encontrados para '{search_query}':")
         st.dataframe(filtered_data)
 
-# Generar preguntas sugeridas
+# Mostrar preguntas sugeridas en tabla y permitir consultas
 st.subheader("Preguntas sugeridas")
-suggested_questions = [
-    "¿Qué especialidades son las más recomendadas según los profesores?",
-    "¿Qué retos enfrentaron los estudiantes al elegir su carrera?",
-    "¿Qué habilidades se necesitan para destacar en Ingeniería Informática?",
-    "¿Cómo encontrar información sobre las especialidades más demandadas?"
-]
-for question in suggested_questions:
-    if st.button(question):
-        response = generate_response(question)
-        st.chat_message("assistant", avatar="🤖").markdown(response)
+
+# Crear tabla en formato Markdown para preguntas
+table = """
+| **Pregunta** |
+|--------------|
+| ¿Qué especialidades son las más recomendadas según los profesores? |
+| ¿Qué retos enfrentaron los estudiantes al elegir su carrera?       |
+| ¿Qué habilidades se necesitan para destacar en Ingeniería Informática? |
+| ¿Cómo encontrar información sobre las especialidades más demandadas? |
+"""
+st.markdown(table)
+
+# Manejo de preguntas seleccionadas
+selected_question = st.selectbox(
+    "Selecciona una pregunta para consultar",
+    [
+        "¿Qué especialidades son las más recomendadas según los profesores?",
+        "¿Qué retos enfrentaron los estudiantes al elegir su carrera?",
+        "¿Qué habilidades se necesitan para destacar en Ingeniería Informática?",
+        "¿Cómo encontrar información sobre las especialidades más demandadas?"
+    ]
+)
+
+# Botón para procesar la consulta seleccionada
+if st.button("Consultar"):
+    response = generate_response(selected_question)
+    st.chat_message("assistant", avatar="🤖").markdown(response)
 
 # Entrada del usuario y procesamiento
 st.subheader("Haz tu consulta")
