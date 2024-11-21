@@ -7,7 +7,7 @@ import logging
 from fuzzywuzzy import fuzz
 
 # Configurar logger
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 
 # Configuración inicial de la página
 st.set_page_config(page_title="Nova-Infor", page_icon=":computer:")
@@ -29,12 +29,13 @@ except KeyError:
 
 # Cargar datos desde archivos CSV con validación
 @st.cache_data
-def load_data(file_path):
-    """Cargar datos desde un archivo CSV con validación."""
+def load_data(file_path, required_columns=["Pregunta"]):
+    """Cargar datos desde un archivo CSV con validación de columnas."""
     try:
         data = pd.read_csv(file_path)
-        if data.empty:
-            raise ValueError(f"El archivo {file_path} está vacío.")
+        missing_columns = [col for col in required_columns if col not in data.columns]
+        if missing_columns:
+            raise ValueError(f"Faltan las columnas requeridas: {missing_columns}")
         return data
     except FileNotFoundError:
         st.error(f"❌ El archivo {file_path} no fue encontrado. Verifica la ubicación.")
@@ -47,16 +48,6 @@ def load_data(file_path):
 maestros_df = load_data("Entrevistas_maestros.csv")
 estudiantes_df = load_data("Entrevistas_estudiantes.csv")
 
-# Verificar si la columna 'Pregunta' existe
-def check_columns(df):
-    """Verifica que la columna 'Pregunta' exista en el DataFrame"""
-    if "Pregunta" not in df.columns:
-        st.error("❌ La columna 'Pregunta' no existe en el archivo CSV.")
-        st.stop()
-
-check_columns(maestros_df)
-check_columns(estudiantes_df)
-
 # Procesar los datos
 def process_data(data):
     """Procesar un DataFrame en un diccionario para búsquedas."""
@@ -64,8 +55,7 @@ def process_data(data):
     for index, row in data.iterrows():
         pregunta = row.get("Pregunta", "").strip()
         if pregunta:
-            # Verificar si las columnas tienen datos válidos
-            result[pregunta] = {col: (row.get(col, "").strip() if isinstance(row.get(col), str) else "") for col in data.columns if col != "Pregunta"}
+            result[pregunta] = {col: row[col] for col in data.columns if col != "Pregunta"}
     return result
 
 maestros_data = process_data(maestros_df)
@@ -81,7 +71,7 @@ def get_system_prompt():
     """
 
 # Buscar respuesta en los datos
-def buscar_respuesta(pregunta_usuario, datos):
+def buscar_respuesta(pregunta_usuario, datos, umbral=70):
     """Buscar una respuesta basada en similitud en los datos proporcionados."""
     max_similarity = 0
     best_match = None
@@ -90,7 +80,7 @@ def buscar_respuesta(pregunta_usuario, datos):
         if similarity > max_similarity:
             max_similarity = similarity
             best_match = pregunta
-    if max_similarity > 70:  # Umbral de similitud
+    if max_similarity >= umbral:
         return datos[best_match]
     return None
 
@@ -99,12 +89,12 @@ def generate_response(prompt, temperature=0.1, max_tokens=1000):
     """Generar una respuesta combinando datos y OpenAI."""
     st.session_state["messages"].append({"role": "user", "content": prompt})
     
-    # Intentar encontrar una respuesta en los datos de maestros
+    # Buscar respuesta en los datos de maestros
     respuesta = buscar_respuesta(prompt, maestros_data)
     
     if respuesta:
         # Si se encuentra una respuesta en los datos, devuélvela
-        response = "\n".join([f"**{k}:** {v}" for k, v in respuesta.items() if v])
+        response = "\n".join([f"**{k}:** {v}" for k, v in respuesta.items() if pd.notna(v)])
         st.session_state["messages"].append({"role": "assistant", "content": response})
         return response
     else:
