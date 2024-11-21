@@ -8,29 +8,12 @@ import re
 import pytz
 import json
 import logging
-import openai
-from fuzzywuzzy import fuzz
 
-# Configurar logger
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+# Configura el logger
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Configuración inicial de la página
-st.set_page_config(page_title="Nova-Infor", page_icon=":computer:")
-st.title("👨‍💻 Nova-Infor")
-
-# Mensaje de bienvenida
-st.markdown(
-    """
-    ¡Bienvenido a Nova-Infor, tu consejero virtual en Ingeniería Informática!
-    """
-)
-
-# Inicializar la clave API con manejo de errores
-try:
-    openai.api_key = st.secrets["api_key"]
-except KeyError:
-    st.error("⚠️ La clave `api_key` no está configurada. Agrega esta clave en el archivo `secrets.toml` o en los secretos de Streamlit Cloud.")
-    st.stop()
+# Inicializar el cliente de OpenAI con la clave API
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
