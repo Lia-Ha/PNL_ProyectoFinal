@@ -3,8 +3,6 @@ import streamlit as st
 from datetime import datetime
 from copy import deepcopy
 from openai import OpenAI
-import csv
-import re
 import pytz
 import json
 import logging
@@ -12,8 +10,11 @@ import logging
 # Configura el logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Inicializar el cliente de OpenAI con la clave API
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+# Define la API Key directamente en el código
+#api_key = "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"
+
+
+client = OpenAI(api_key=st.secrets["api_key"])
 
 # Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
