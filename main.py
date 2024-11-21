@@ -19,6 +19,8 @@ st.markdown(intro)
 
 # Botón para reiniciar conversación al inicio
 if st.button("🔄 Reiniciar conversación"):
+    # Forzar la recarga del script
+    st.session_state.clear()
     st.experimental_rerun()
 
 # Función para cargar archivos CSV y manejar errores
