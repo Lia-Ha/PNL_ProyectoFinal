@@ -17,6 +17,10 @@ st.title("👨‍💻 Nova-Infor Plus")
 intro = """¡Bienvenido a Nova-Infor Plus! Tu asistente virtual especializado en orientación académica dentro de Ingeniería Informática."""
 st.markdown(intro)
 
+# Botón para reiniciar conversación al inicio
+if st.button("🔄 Reiniciar conversación"):
+    st.experimental_rerun()
+
 # Función para cargar archivos CSV y manejar errores
 def load_csv(file_path):
     try:
@@ -113,10 +117,6 @@ if user_input:
     st.chat_message("user", avatar="👤").markdown(user_input)
     response = generate_response(user_input)
     st.chat_message("assistant", avatar="🤖").markdown(response)
-
-# Botón para reiniciar conversación
-if st.button("Reiniciar conversación"):
-    st.experimental_rerun()
 
 # Herramienta para explorar especialidades
 if st.checkbox("Explorar especialidades"):
