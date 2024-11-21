@@ -1,18 +1,16 @@
-import pandas as pd
 import streamlit as st
+import pandas as pd
 from datetime import datetime
 from openai import OpenAI
 import logging
 
+# Configuración inicial de la página (debe ser la primera línea)
+st.set_page_config(page_title="Nova-Infor Plus", page_icon="💡")
+
 # Configuración del logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Botón para reiniciar conversación
-if st.button("Reiniciar conversación"):
-    st.experimental_rerun()
-
-# Configuración inicial de la página
-st.set_page_config(page_title="Nova-Infor Plus", page_icon="💡")
+# Título de la aplicación
 st.title("👨‍💻 Nova-Infor Plus")
 
 # Mensaje de bienvenida
@@ -95,19 +93,18 @@ if st.checkbox("Mostrar datos cargados y buscar información"):
         st.write(f"Resultados encontrados para '{search_query}':")
         st.dataframe(filtered_data)
 
-# Mostrar preguntas sugeridas en tabla y permitir consultas
+# Generar preguntas sugeridas
 st.subheader("Preguntas sugeridas")
-
-# Crear tabla en formato Markdown para preguntas
-table = """
-| **Pregunta** |
-|--------------|
-| ¿Qué especialidades son las más recomendadas según los profesores? |
-| ¿Qué retos enfrentaron los estudiantes al elegir su carrera?       |
-| ¿Qué habilidades se necesitan para destacar en Ingeniería Informática? |
-| ¿Cómo encontrar información sobre las especialidades más demandadas? |
-"""
-st.markdown(table)
+suggested_questions = [
+    "¿Qué especialidades son las más recomendadas según los profesores?",
+    "¿Qué retos enfrentaron los estudiantes al elegir su carrera?",
+    "¿Qué habilidades se necesitan para destacar en Ingeniería Informática?",
+    "¿Cómo encontrar información sobre las especialidades más demandadas?"
+]
+for question in suggested_questions:
+    if st.button(question):
+        response = generate_response(question)
+        st.chat_message("assistant", avatar="🤖").markdown(response)
 
 # Entrada del usuario y procesamiento
 st.subheader("Haz tu consulta")
@@ -116,6 +113,10 @@ if user_input:
     st.chat_message("user", avatar="👤").markdown(user_input)
     response = generate_response(user_input)
     st.chat_message("assistant", avatar="🤖").markdown(response)
+
+# Botón para reiniciar conversación
+if st.button("Reiniciar conversación"):
+    st.experimental_rerun()
 
 # Herramienta para explorar especialidades
 if st.checkbox("Explorar especialidades"):
