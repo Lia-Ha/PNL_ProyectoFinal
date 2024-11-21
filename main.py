@@ -26,7 +26,7 @@ if "messages" not in st.session_state:
 # Definir el estado inicial (vacío o con un mensaje predeterminado)
 initial_state = [
     {"role": "system", "content": "Eres un asistente virtual experto en orientación académica para estudiantes de Ingeniería Informática."},
-    {"role": "assistant", "content": "¡Hola! Soy tu asistente virtual para ayudarte a elegir tu especialidad en Ingeniería Informática. ¿Cómo puedo ayudarte hoy?"}
+    {"role": "assistant", "content": "Hola! Soy tu asistente virtual para elegir la especialidad ideal en Ingeniería Informática. Para comenzar, cuéntame un poco sobre ti."}
 ]
 
 # Botón para reiniciar la conversación
