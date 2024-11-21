@@ -12,27 +12,11 @@ import logging
 # Configura el logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Configurar el cliente de OpenAI
-client = OpenAI(api_key=st.secrets["api_key"])
+# Define la API Key directamente en el código
+#api_key = "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"
 
-def generate_response(user_input):
-    """Genera la respuesta basada en el input del usuario."""
-    system_prompt = get_system_prompt()
-    messages = [{"role": "system", "content": system_prompt}] + st.session_state["messages"] + [{"role": "user", "content": user_input}]
-    try:
-        completion = client.chat_completions.create(
-            model="gpt-4",
-            messages=messages,
-            temperature=0.5,
-            max_tokens=1000
-        )
-        response = completion.choices[0].message.content
-        st.session_state["messages"].append({"role": "user", "content": user_input})
-        st.session_state["messages"].append({"role": "assistant", "content": response})
-        return response
-    except Exception as e:
-        logging.error(f"Error al generar respuesta: {e}")
-        return "Hubo un problema al generar la respuesta. Por favor, intenta nuevamente."
+
+client = OpenAI(api_key=st.secrets["api_key"])
 
 # Configuración inicial de la página
 st.set_page_config(page_title="Nova-Infor", page_icon=":pot_of_food:")
