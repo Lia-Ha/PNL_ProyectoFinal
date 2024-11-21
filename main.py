@@ -113,15 +113,3 @@ for message in st.session_state["messages"]:
         with st.chat_message(message["role"], avatar="👤"):
             st.markdown(message["content"])
 
-# Entrada del usuario
-if prompt := st.chat_input():
-    # Verificar si el contenido es inapropiado
-    if check_for_inappropriate_content(prompt):
-        with st.chat_message("assistant", avatar="👨‍💻"):
-            st.markdown("Por favor, mantengamos la conversación respetuosa.")
-    else:
-        with st.chat_message("user", avatar="👤"):
-            st.markdown(prompt)
-        output = generate_response(prompt)
-        with st.chat_message("assistant", avatar="👨‍💻"):
-            st.markdown(output)
