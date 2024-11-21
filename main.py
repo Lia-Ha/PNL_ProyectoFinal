@@ -88,7 +88,7 @@ def generate_response(user_input):
         logging.error(f"Error al generar respuesta: {e}")
         return "Hubo un problema al generar la respuesta. Por favor, intenta nuevamente."
 
-# Mostrar preguntas sugeridas como una tabla
+# Mostrar preguntas sugeridas como una tabla sin índices
 st.subheader("Preguntas sugeridas")
 
 # Crear un DataFrame para las preguntas sugeridas
@@ -99,9 +99,9 @@ suggested_questions = [
     {"Pregunta": "¿Cómo encontrar información sobre las especialidades más demandadas?"}
 ]
 
-# Mostrar la tabla con las preguntas sugeridas
+# Mostrar la tabla con las preguntas sugeridas sin los índices
 questions_df = pd.DataFrame(suggested_questions)
-st.table(questions_df)
+st.table(questions_df.set_index('Pregunta', drop=True))  # Eliminar la columna de índice y mostrar solo las preguntas
 
 # Entrada del usuario y procesamiento
 st.subheader("Haz tu consulta")
@@ -118,6 +118,10 @@ for message in st.session_state["messages"]:
     elif message["role"] == "assistant":
         with st.chat_message(message["role"], avatar="🤖"):
             st.markdown(message["content"])
+    else:
+        with st.chat_message(message["role"], avatar="👤"):
+            st.markdown(message["content"])
+
     else:
         with st.chat_message(message["role"], avatar="👤"):
             st.markdown(message["content"])
