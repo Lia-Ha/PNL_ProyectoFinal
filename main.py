@@ -27,7 +27,7 @@ except KeyError:
     st.error("⚠️ La clave `api_key` no está configurada. Agrega esta clave en el archivo `secrets.toml` o en los secretos de Streamlit Cloud.")
     st.stop()
 
-# Cargar datos desde archivos CSV
+# Cargar datos desde archivos CSV con validación
 @st.cache_data
 def load_data(file_path):
     """Cargar datos desde un archivo CSV con validación."""
@@ -47,6 +47,16 @@ def load_data(file_path):
 maestros_df = load_data("Entrevistas_maestros.csv")
 estudiantes_df = load_data("Entrevistas_estudiantes.csv")
 
+# Verificar si la columna 'Pregunta' existe
+def check_columns(df):
+    """Verifica que la columna 'Pregunta' exista en el DataFrame"""
+    if "Pregunta" not in df.columns:
+        st.error("❌ La columna 'Pregunta' no existe en el archivo CSV.")
+        st.stop()
+
+check_columns(maestros_df)
+check_columns(estudiantes_df)
+
 # Procesar los datos
 def process_data(data):
     """Procesar un DataFrame en un diccionario para búsquedas."""
@@ -54,7 +64,8 @@ def process_data(data):
     for index, row in data.iterrows():
         pregunta = row.get("Pregunta", "").strip()
         if pregunta:
-            result[pregunta] = {col: row.get(col, "").strip() for col in data.columns if col != "Pregunta"}
+            # Verificar si las columnas tienen datos válidos
+            result[pregunta] = {col: (row.get(col, "").strip() if isinstance(row.get(col), str) else "") for col in data.columns if col != "Pregunta"}
     return result
 
 maestros_data = process_data(maestros_df)
