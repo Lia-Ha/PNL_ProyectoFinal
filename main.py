@@ -12,8 +12,21 @@ import logging
 # Configura el logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-# Inicializar el cliente de OpenAI con la clave API
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+# Verificar si la clave API está configurada en los secretos
+api_key = st.secrets.get("OPENAI_API_KEY", None)
+
+if not api_key:
+    st.error(
+        "⚠️ La clave API para OpenAI no está configurada. Por favor, verifica el archivo `secrets.toml` o "
+        "la configuración de secretos en Streamlit Cloud."
+    )
+else:
+    try:
+        # Inicializar cliente OpenAI solo si la clave está disponible
+        client = OpenAI(api_key=api_key)
+        st.success("✅ Cliente OpenAI configurado correctamente.")
+    except Exception as e:
+        st.error(f"Error al inicializar el cliente OpenAI: {e}")
 
 # Configuración inicial de la página
 st.set_page_config(page_title="SazónBot", page_icon=":pot_of_food:")
