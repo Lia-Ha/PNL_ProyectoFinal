@@ -20,11 +20,6 @@ st.markdown(intro)
 if "messages" not in st.session_state:
     st.session_state["messages"] = []  # Inicializar mensajes
 
-# Botón para reiniciar conversación
-if st.button("🔄 Reiniciar conversación"):
-    st.session_state["messages"] = []  # Limpiar mensajes
-    st.experimental_rerun()  # Recargar la aplicación
-
 # Función para cargar archivos CSV y manejar errores
 def load_csv(file_path):
     try:
@@ -101,3 +96,32 @@ if user_input:
     st.chat_message("user", avatar="👤").markdown(user_input)
     response = generate_response(user_input)
     st.chat_message("assistant", avatar="🤖").markdown(response)
+
+# Botón para eliminar conversación
+clear_button = st.button("🔄Eliminar conversación", key="clear")
+if clear_button:
+    st.session_state["messages"] = deepcopy(initial_state)
+
+# Mostrar mensajes de chat desde el historial al recargar la aplicación
+for message in st.session_state["messages"]:
+    if message["role"] == "system":
+        continue
+    elif message["role"] == "assistant":
+        with st.chat_message(message["role"], avatar="👨‍💻"):
+            st.markdown(message["content"])
+    else:
+        with st.chat_message(message["role"], avatar="👤"):
+            st.markdown(message["content"])
+
+# Entrada del usuario
+if prompt := st.chat_input():
+    # Verificar si el contenido es inapropiado
+    if check_for_inappropriate_content(prompt):
+        with st.chat_message("assistant", avatar="👨‍💻"):
+            st.markdown("Por favor, mantengamos la conversación respetuosa.")
+    else:
+        with st.chat_message("user", avatar="👤"):
+            st.markdown(prompt)
+        output = generate_response(prompt)
+        with st.chat_message("assistant", avatar="👨‍💻"):
+            st.markdown(output)
