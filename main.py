@@ -7,6 +7,10 @@ import logging
 # Configuración del logger
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+# Botón para reiniciar conversación
+if st.button("Reiniciar conversación"):
+    st.experimental_rerun()
+
 # Configuración inicial de la página
 st.set_page_config(page_title="Nova-Infor Plus", page_icon="💡")
 st.title("👨‍💻 Nova-Infor Plus")
@@ -105,22 +109,6 @@ table = """
 """
 st.markdown(table)
 
-# Manejo de preguntas seleccionadas
-selected_question = st.selectbox(
-    "Selecciona una pregunta para consultar",
-    [
-        "¿Qué especialidades son las más recomendadas según los profesores?",
-        "¿Qué retos enfrentaron los estudiantes al elegir su carrera?",
-        "¿Qué habilidades se necesitan para destacar en Ingeniería Informática?",
-        "¿Cómo encontrar información sobre las especialidades más demandadas?"
-    ]
-)
-
-# Botón para procesar la consulta seleccionada
-if st.button("Consultar"):
-    response = generate_response(selected_question)
-    st.chat_message("assistant", avatar="🤖").markdown(response)
-
 # Entrada del usuario y procesamiento
 st.subheader("Haz tu consulta")
 user_input = st.chat_input("Escribe tu pregunta aquí...")
@@ -128,10 +116,6 @@ if user_input:
     st.chat_message("user", avatar="👤").markdown(user_input)
     response = generate_response(user_input)
     st.chat_message("assistant", avatar="🤖").markdown(response)
-
-# Botón para reiniciar conversación
-if st.button("Reiniciar conversación"):
-    st.experimental_rerun()
 
 # Herramienta para explorar especialidades
 if st.checkbox("Explorar especialidades"):
