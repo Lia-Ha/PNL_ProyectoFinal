@@ -46,11 +46,14 @@ Basándote en los datos de los archivos CSV de **maestros** y **estudiantes**, a
 """
 
 # Estado inicial de la conversación
+initial_state = [
+    {"role": "system", "content": get_system_prompt(maestros, estudiantes)},
+    {"role": "assistant", "content": "Hola 👋, soy Nova-Infor. ¿Cómo puedo ayudarte a explorar tus opciones de especialidad?"},
+]
+
+# Inicializar mensajes en el estado de sesión
 if "messages" not in st.session_state:
-    st.session_state["messages"] = [
-        {"role": "system", "content": get_system_prompt(maestros, estudiantes)},
-        {"role": "assistant", "content": "Hola 👋, soy Nova-Infor. ¿Cómo puedo ayudarte a explorar tus opciones de especialidad?"},
-    ]
+    st.session_state["messages"] = deepcopy(initial_state)
 
 # Mostrar el historial de mensajes
 for message in st.session_state["messages"]:
@@ -63,7 +66,7 @@ if user_input := st.chat_input(placeholder="Escribe tu pregunta aquí..."):
     with st.chat_message("user", avatar="👤"):
         st.markdown(user_input)
 
-    # Generar respuesta simulada basada en datos (mejorar con modelo AI más adelante)
+    # Generar respuesta simulada basada en datos
     if maestros is not None and estudiantes is not None:
         response = f"Gracias por tu pregunta. Según los datos, aquí tienes un consejo basado en los maestros y estudiantes..."
     else:
@@ -77,8 +80,8 @@ if user_input := st.chat_input(placeholder="Escribe tu pregunta aquí..."):
     st.session_state["messages"].append({"role": "user", "content": user_input})
     st.session_state["messages"].append({"role": "assistant", "content": response})
 
-
 # Botón para reiniciar la conversación
 clear_button = st.button("🗑️ Reiniciar conversación", key="clear")
 if clear_button:
     st.session_state["messages"] = deepcopy(initial_state)  # Reiniciar los mensajes
+    st.experimental_rerun()
