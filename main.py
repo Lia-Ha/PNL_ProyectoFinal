@@ -36,7 +36,7 @@ if clear_button:
 def load_csv(file_path):
     try:
         data = pd.read_csv(file_path)
-        st.success(f"Archivo '{file_path}' cargado correctamente.")
+        # Se ha eliminado la línea de st.success para no mostrar mensajes
         return data
     except Exception as e:
         st.error(f"No se pudo cargar el archivo '{file_path}': {e}")
@@ -119,4 +119,3 @@ for message in st.session_state["messages"]:
     else:
         with st.chat_message(message["role"], avatar="👤"):
             st.markdown(message["content"])
-
