@@ -77,10 +77,8 @@ if user_input := st.chat_input(placeholder="Escribe tu pregunta aquí..."):
     st.session_state["messages"].append({"role": "user", "content": user_input})
     st.session_state["messages"].append({"role": "assistant", "content": response})
 
-# Botón para limpiar la conversación
-if st.button("🗑️ Reiniciar conversación"):
-    st.session_state["messages"] = [
-        {"role": "system", "content": get_system_prompt(maestros, estudiantes)},
-        {"role": "assistant", "content": "Hola 👋, soy Nova-Infor. ¿Cómo puedo ayudarte a explorar tus opciones de especialidad?"},
-    ]
-    st.experimental_rerun()
+
+# Botón para reiniciar la conversación
+clear_button = st.button("🗑️ Reiniciar conversación", key="clear")
+if clear_button:
+    st.session_state["messages"] = deepcopy(initial_state)  # Reiniciar los mensajes
